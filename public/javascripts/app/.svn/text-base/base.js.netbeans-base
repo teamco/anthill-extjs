@@ -1,0 +1,77 @@
+var base = {
+    defaultErrorCode : 405,
+    defaultLanguageCode : 'us',    
+    currentLanguageCode : 'us',
+    subfolder : ['/admin'],
+    t : function(s) {
+        return globalizer.translate(s);
+    },
+    log : function(e) {
+        if (!this.unDefined(window.console)) {
+            console.log(e);
+        }
+    },
+    logDate : function() {
+        return new Date().format('g:i:s A');
+    },
+    setAppMode : function(mode) {
+        base.appMode=mode||'development';
+    },
+    setLangaugeCode : function(name) {
+        return (this.unDefined(name)) ?
+            (window.location.pathname.split(/\//)[3] ||
+            this.defaultLanguageCode) :
+            this.currentLanguageCode = name;
+    },
+    getURL : function(action, id) {
+        return this.subfolder[0]+
+           action+
+           this.currentLanguageCode+
+           (this.unDefined(id) ? '' : '/'+id);
+    },
+    renderURL : function(opts) {
+        var url = opts.json.setting,
+            loc = window.location;
+        return loc.protocol+'//'+loc.host+this.subfolder.concat([
+           url.type,
+           url.action,
+           this.currentLanguageCode,
+           url.id
+        ]).join('/');
+    },
+    removeHTML : function(html, tag) {
+        var text = '';
+        try {
+            text = html.split('<'+tag.toLowerCase()+'>')[1].
+                        split('</'+tag.toLowerCase()+'>')[0];
+        } catch(e) {
+            ajax.jsError(e);
+        }
+        return text;
+ 	},
+    isBlank : function(str) {
+        return Ext.util.Format.trim(str).length === 0;
+    },
+    unDefined : function(e) {
+        return typeof e==='undefined';
+    },
+    isNull : function(e) {
+        return e===null;
+    },
+    isDefined : function(params) {
+        return this.unDefined(Ext.each(params, function(p){
+            if (base.unDefined(p) || p === null) {
+                return false;
+            } else {
+                return !base.isBlank(p);
+            }
+        }));
+    },
+    updateClock : function(id) {
+        Ext.getCmp(id).setText(new Date().format('g:i:s A'));
+    },
+    setDefault : function(opts) {
+        Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+        Ext.QuickTips.init();        
+    }
+};

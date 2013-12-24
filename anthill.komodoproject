@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="41110971-58d0-de4b-8bc3-bc43a7764065" kpf_version="5" name="anthill.komodoproject">
+<preference-set idref="41110971-58d0-de4b-8bc3-bc43a7764065">
+  <boolean id="import_live">1</boolean>
+  <string id="mappedPaths"></string>
+  <string id="rubyExtraPaths">/Users/teamco/.rvm/rubies/ruby-1.9.2-p136/bin</string>
+</preference-set>
+</project>

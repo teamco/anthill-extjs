@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/anthill_teamco/!svn/ver/867/trunk/db/migrate
+END
+20100203153858_create_items.rb
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/anthill_teamco/!svn/ver/828/trunk/db/migrate/20100203153858_create_items.rb
+END
+20100204134818_create_shared_items.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/anthill_teamco/!svn/ver/828/trunk/db/migrate/20100204134818_create_shared_items.rb
+END
+20100204082223_create_users.rb
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/anthill_teamco/!svn/ver/860/trunk/db/migrate/20100204082223_create_users.rb
+END
+20100915125418_add_sessions_table.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/anthill_teamco/!svn/ver/866/trunk/db/migrate/20100915125418_add_sessions_table.rb
+END
+20101108221918_create_login_infos.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/anthill_teamco/!svn/ver/866/trunk/db/migrate/20101108221918_create_login_infos.rb
+END
+20100203154054_create_languages.rb
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/anthill_teamco/!svn/ver/828/trunk/db/migrate/20100203154054_create_languages.rb
+END
+20100629204236_create_user_logs.rb
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/anthill_teamco/!svn/ver/837/trunk/db/migrate/20100629204236_create_user_logs.rb
+END
+20100701124217_create_error_logs.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/anthill_teamco/!svn/ver/818/trunk/db/migrate/20100701124217_create_error_logs.rb
+END
+20100203155104_create_item_connections.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/anthill_teamco/!svn/ver/758/trunk/db/migrate/20100203155104_create_item_connections.rb
+END
+20100203154103_create_tools.rb
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/anthill_teamco/!svn/ver/828/trunk/db/migrate/20100203154103_create_tools.rb
+END
+20100309130736_create_websites.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/anthill_teamco/!svn/ver/758/trunk/db/migrate/20100309130736_create_websites.rb
+END
+20100317134600_create_properties.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/anthill_teamco/!svn/ver/828/trunk/db/migrate/20100317134600_create_properties.rb
+END

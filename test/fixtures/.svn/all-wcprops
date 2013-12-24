@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/anthill_teamco/!svn/ver/866/trunk/test/fixtures
+END
+shared_items.yml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/shared_items.yml
+END
+error_logs.yml
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/error_logs.yml
+END
+users.yml
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/users.yml
+END
+websites.yml
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/websites.yml
+END
+item_connections.yml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/item_connections.yml
+END
+tools.yml
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/tools.yml
+END
+languages.yml
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/languages.yml
+END
+login_infos.yml
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/anthill_teamco/!svn/ver/866/trunk/test/fixtures/login_infos.yml
+END
+items.yml
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/items.yml
+END
+user_logs.yml
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/user_logs.yml
+END
+properties.yml
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/anthill_teamco/!svn/ver/844/trunk/test/fixtures/properties.yml
+END

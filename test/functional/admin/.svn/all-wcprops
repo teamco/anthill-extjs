@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin
+END
+error_logs_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/error_logs_controller_test.rb
+END
+user_groups_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/user_groups_controller_test.rb
+END
+tools_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/tools_controller_test.rb
+END
+items_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/items_controller_test.rb
+END
+users_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/users_controller_test.rb
+END
+user_logs_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/user_logs_controller_test.rb
+END
+categories_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/categories_controller_test.rb
+END
+websites_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/websites_controller_test.rb
+END
+languages_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/languages_controller_test.rb
+END
+login_controller_test.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/anthill_teamco/!svn/ver/845/trunk/test/functional/admin/login_controller_test.rb
+END

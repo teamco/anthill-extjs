@@ -1,0 +1,211 @@
+require 'yaml'
+
+class Item < ActiveRecord::Base
+  has_one   :user
+  has_one   :tool
+  has_one   :language
+  has_one   :website
+
+  has_many  :shared_items,     :as => :shareable
+  has_many  :item_connections, :as => :connectable
+  has_many  :properties,       :as => :propertable
+
+  acts_as_nested_set
+
+  def conn_to
+    ItemConnection.find_all_by_item_id(self.id)
+  end
+
+  def tool_type
+    self.tool.tool_type
+  end
+
+  def is_tool?
+    !self.tool_data.nil?
+  end
+
+  def tool_data
+    Tool.find_by_item_id(self.id)
+  end
+
+  def get_tools
+    tool_map = []
+    self.conn_to.each do |x|
+      item = x.connectable
+      tool_map << {
+        :id         => item.id,
+        :name       => item.get_title,
+        :controller => item.tool_type
+      } if item.is_tool?
+    end
+    tool_map
+  end
+
+  def self_and_childrens
+    [self]+self.children
+  end
+
+  def self_controller
+    Tool.find(self.tool_id).tool_type
+  end
+
+  def grid_updated
+    self.property.updated_at.strftime("%Y %b %d %I:%M:%S %p")
+  end
+
+  def grid_defaults(opts={})
+    hash = {
+      :pager    => 25,
+      :type     => self.tool_type,
+      :id       => self.id,
+      :title    => self.get_title,
+      :sort     => {
+        :able   => true,
+        :remote => true
+      },
+      :search   => {
+        :able   => true,
+        :mode   => 'remote',
+        :min    => 2,
+        :width  => 200
+      },
+      :tools    => [
+        {
+          :id        => 'refresh',
+          :able      => true,
+          :reset     => true
+        }, {
+          :id   => 'save',
+          :cls  => 'save_as',
+          :able => true
+        }, {
+          :id   => 'print',
+          :cls  => 'print_to',
+          :able => true
+        }, {
+          :id   => 'help',
+          :able => true
+        },
+      ],
+      :expander => false
+    } 
+    opts.nil? ? hash : opts.first.nil? ? hash : hash.merge(opts)
+  end
+
+  def author_info
+    User.find_by_id(self.user_id).item.get_title
+  end
+
+  def default_list
+    {
+      :title      => self.get_title,
+      :item_id    => self.id,
+      :updated_at => self.grid_updated,
+      :author     => self.author_info
+    }
+  end
+
+  def self.list(opts)
+    item_map = []
+    unless opts[:id].nil?
+      parent = self.find_by_id(opts[:id])
+      parent.children.each do |x|
+        item_map << {}.merge(x.default_list)
+      end unless parent.nil?
+    end
+    {
+      :list => self.sort(item_map, opts),
+      :item => parent
+    } 
+  end
+
+  def get_title
+    self.shared.title
+  end
+
+  def get_description
+    self.shared.description
+  end
+
+  def self.json_pre(json)
+    "<pre><code>#{JSON.pretty_generate(JSON.parse(json))}</code></pre>"
+  end
+
+  def self.check_methods(array, opts={})
+    opts[:create] = opts[:create] || 'blocked'
+    items = if self.allowed_methods.include?(opts[:create].to_sym)
+      self.send opts[:create].to_sym, array, opts
+    else
+      array
+    end
+    items
+  end
+  
+  def self.sort(array, opts={})
+    array = self.check_methods(array, opts)
+    unless opts[:reset] || !opts[:reset].nil?
+      array = array.sort_by{|x| x[opts[:sort].to_sym]}
+      array.reverse! if opts[:dir] == 'DESC'
+    end unless opts[:sort].blank?
+    self.search(array, opts)
+  end
+
+  def self.search(array, opts={})
+    res = []
+    idx = YAML.load(opts[:fields].gsub(/[\,]/, ', ')) rescue []
+    array.each do |x|
+      idx.each{|y| res << x if x[y.to_sym].to_s.downcase.include?(opts[:query])}
+    end unless opts[:query].blank? unless idx.empty?
+    res.empty? ? array : res.uniq
+  end
+
+  def self.allowed_methods
+    [
+      :refresh,
+      :save,
+      :print,
+      :help
+    ]
+  end
+
+  def self.refresh(array, opts={})
+    array
+  end
+
+  def self.print_to(array, opts={})
+    array
+  end
+
+  def self.save_as(array, opts={})
+    array
+  end
+
+  def self.help(array, opts={})
+    array
+  end
+
+  def shared
+    self.shared_items.first
+  end
+
+  def property
+    self.properties.first
+  end
+
+  def visible?
+    self.property.visible
+  end
+
+  def active?
+    self.property.active
+  end
+
+  def published?
+    self.property.published
+  end
+
+  def canbused?
+    self.visible? && self.active? && self.published?
+  end
+
+end

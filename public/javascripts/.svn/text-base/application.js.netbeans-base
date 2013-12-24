@@ -1,0 +1,14 @@
+Ext.onReady(function(){
+    Ext.getDom(window).onerror = ajax.handleJsError;
+    extend.init();
+    base.setDefault();
+    ajax.load({
+        url: base.getURL('/languages/check/'),
+        title: base.t({
+            item:'loader',
+            action:'language'
+        }),
+        callback: login.loginAction
+    });
+
+});

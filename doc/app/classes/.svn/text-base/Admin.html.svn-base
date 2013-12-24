@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: Admin</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">Admin</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Module <a href="Admin/CategoriesHelper.html" class="link">Admin::CategoriesHelper</a><br />
+Module <a href="Admin/ErrorLogsHelper.html" class="link">Admin::ErrorLogsHelper</a><br />
+Module <a href="Admin/ItemsHelper.html" class="link">Admin::ItemsHelper</a><br />
+Module <a href="Admin/LanguagesHelper.html" class="link">Admin::LanguagesHelper</a><br />
+Module <a href="Admin/LoginHelper.html" class="link">Admin::LoginHelper</a><br />
+Module <a href="Admin/ToolsHelper.html" class="link">Admin::ToolsHelper</a><br />
+Module <a href="Admin/UserGroupsHelper.html" class="link">Admin::UserGroupsHelper</a><br />
+Module <a href="Admin/UserLogsHelper.html" class="link">Admin::UserLogsHelper</a><br />
+Module <a href="Admin/UsersHelper.html" class="link">Admin::UsersHelper</a><br />
+Module <a href="Admin/WebsitesHelper.html" class="link">Admin::WebsitesHelper</a><br />
+Class <a href="Admin/CategoriesController.html" class="link">Admin::CategoriesController</a><br />
+Class <a href="Admin/ErrorLogsController.html" class="link">Admin::ErrorLogsController</a><br />
+Class <a href="Admin/ItemsController.html" class="link">Admin::ItemsController</a><br />
+Class <a href="Admin/LanguagesController.html" class="link">Admin::LanguagesController</a><br />
+Class <a href="Admin/LoginController.html" class="link">Admin::LoginController</a><br />
+Class <a href="Admin/ToolsController.html" class="link">Admin::ToolsController</a><br />
+Class <a href="Admin/UserGroupsController.html" class="link">Admin::UserGroupsController</a><br />
+Class <a href="Admin/UserLogsController.html" class="link">Admin::UserLogsController</a><br />
+Class <a href="Admin/UsersController.html" class="link">Admin::UsersController</a><br />
+Class <a href="Admin/WebsitesController.html" class="link">Admin::WebsitesController</a><br />
+
+    </div>
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

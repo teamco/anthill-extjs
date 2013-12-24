@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/ext-all.css" />
+    <script type="text/javascript" src="/javascripts/app/init.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/extend.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/inflector.js"></script>
+    <script type="text/javascript" src="/javascripts/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ext-all.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/Ext.ux.util.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/ProgressBarPager.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/PanelResizer.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/PagingMemoryProxy.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/RowExpander.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/TabCloseMenu.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/ux/GridSearch.js"></script>
+    <script type="text/javascript" src="/javascripts/app/base.js"></script>
+    <script type="text/javascript" src="/javascripts/app/globalizer.js"></script>
+    <script type="text/javascript" src="/javascripts/application.js"></script>
+    <script type="text/javascript" src="/javascripts/app/html.js"></script>
+    <script type="text/javascript" src="/javascripts/app/ajax.js"></script>
+    <script type="text/javascript" src="/javascripts/app/layout.js"></script>
+    <script type="text/javascript" src="/javascripts/app/data.js"></script>
+    <script type="text/javascript" src="/javascripts/app/action.js"></script>
+    <script type="text/javascript" src="/javascripts/app/form.js"></script>
+    <script type="text/javascript" src="/javascripts/app/login.js"></script>
+<style type="text/css">
+    html, body {
+        font:normal 12px verdana;
+        margin:0;
+        padding:0;
+        border:0 none;
+        overflow:hidden;
+        height:100%;
+    }
+    p {
+        margin:5px;
+    }
+    .header {
+      background-image: none;
+      font-size: 11px;
+      padding: 2px 5px;
+      cursor: pointer;
+    }
+    .x-grid3-row td, .x-grid3-summary-row td, .x-grid3-cell {-moz-user-select: text;-khtml-user-select: auto;-webkit-user-select: normal;}
+    .x-panel-noborder .x-panel-header-noborder {border-width: 0;}
+    .x-panel-noborder .x-panel-tbar-noborder .x-toolbar {border-width: 1px 1px 0;}
+    .x-panel-noborder .x-panel-bbar-noborder .x-toolbar {border-width:0 1px 1px;}
+
+    .icon-log {background-image: url(/images/icons/user_logs.png) !important;}
+    .icon-fix {background-image: url(/images/icons/accept.png) !important;}
+    .icon-home {background-image: url(/images/icons/home.png) !important;}
+    .icon-add {background-image: url(/images/icons/add.png) !important;}
+    .icon-tools {background-image: url(/images/icons/tools.png) !important;}
+    .icon-categories {background-image: url(/images/icons/tool_groups.png) !important;}
+    .icon-error_logs {background-image: url(/images/icons/error_logs.png) !important;}
+    .icon-user_logs {background-image: url(/images/icons/user_logs.png) !important;}
+    .icon-user_groups {background-image: url(/images/icons/user_groups.png) !important;}
+    .icon-users {background-image: url(/images/icons/users.png) !important;}
+    .icon-languages {background-image: url(/images/icons/countries.png) !important;}
+    .icon-zoom {background-image: url(/images/icons/magnifier.png) !important;}
+    .icon-logout {background-image: url(/images/icons/exit.png) !important;}
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>

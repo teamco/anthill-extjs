@@ -1,0 +1,10 @@
+K 10
+svn:ignore
+V 62
+server.log
+production.log
+development.log
+urobot.log
+test.log
+
+END

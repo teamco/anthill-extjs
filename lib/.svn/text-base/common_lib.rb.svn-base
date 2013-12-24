@@ -1,0 +1,305 @@
+module CommonLib
+#  Before filter:
+#  Create user log per each action
+  def update_user_log
+    logger.info '-- update_user_log: Create user log'
+    UserLog.create!({
+      :user_id          => User.find_user(session[:system][:user]),
+      :remote_addr      => request.remote_ip,
+      :session_id       => request.session_options[:id],
+      :status           => response.status,
+      :method           => request.method().to_s,
+      :controller       => controller_name,
+      :action           => action_name,
+      :language         => params[:lang],
+      :item_id          => params[:id],
+      :domain           => request.domain,
+      :request_uri      => request.fullpath,
+      :url              => request.url,
+      :protocol         => request.protocol,
+      :host             => request.host,
+      :port             => request.port,
+      :user_params      => request.params.to_json,
+      :user_session     => request.session.to_json,
+      :query_string     => request.query_string,
+      :http_accept      => request.headers['HTTP_ACCEPT'],
+      :format           => request.format.to_json,
+      :ssl              => request.ssl?,
+      :xhr              => request.xhr?,
+      :referer          => request.env['HTTP_REFERER'],
+      :http_user_agent  => request.headers["HTTP_USER_AGENT"],
+      :server_software  => request.headers["SERVER_SOFTWARE"],
+      :content_type     => response.content_type
+    }) if UserLog.except({:controller => controller_name, :action => action_name})
+  end
+
+  def authorize
+    logger.info '-- authorize: Check user authorization before action'
+    unless session[:system][:user].nil?
+      user = User.loggedin?(session[:system][:user])
+      if (user)
+        return session[:system][:user]
+        user_permissions
+      else
+        user_logout(true)
+      end
+    else
+      restore_session
+    end
+  end
+
+  def restore_session
+    logger.info '-- restore_session: Try to restore session from DB'
+    storage = LoginInfo.session_data(request)
+    session[:system] = Marshal.load(Base64.decode64(storage.data)) if restore_rules(storage)
+  end
+
+  def login_data
+    logger.info '-- login_data: Get user data'
+    restore_session if session[:system][:user].nil?
+    User.get_login(session[:system][:user])
+  end
+
+  def default_xhr
+    logger.info '-- default_xhr: Set default xhr request hash data'
+    login = login_data
+    lang  = check_language(true)
+    data  = {
+      :language => nil,
+      :error    => lang,
+      :login    => login,
+      :mode     => Rails.env
+    }
+    data.merge!(language_data(lang)) unless lang.is_a?(String)
+    data.delete(:error) unless lang.is_a?(String)
+    data
+  end
+
+  def user_logout(logout)
+    logger.info '-- user_logout: Delete user data from session and destroy login info of current session'
+    session[:system].delete(:user)
+    LoginInfo.destroy_all({
+      :user_ip    => request.remote_ip,
+      :user_agent => request.headers["HTTP_USER_AGENT"]
+    }) if logout.eql?('true')
+  end
+
+  def user_login
+    logger.info '-- user_login: Login to system'
+    user_logout(false)
+    user  = User.do_login(params[:user])
+    error = user[:error].is_a?(String) ? user[:error] : nil
+    login_init(user) if error.nil?
+    render_xhr({
+        :json => {
+          :login => session[:system][:user],
+          :error => error
+        }.merge(language_data(check_language(true))),
+        :success => true
+    }) if request.xhr?
+  end
+
+  def user_permissions
+    logger.info '-- user_permissions: Set permissions'
+    session[:system][:user]
+  end
+
+  def grid_expander(opts=[])
+    expander = []
+    opts.each do |x|
+      title  = x[:header] || x[:id].humanize
+      expander << "<li style='margin:5px 0'><span style=\"font-weight:bold\">#{title}:</span> {#{x[:id]}}</li>"
+    end
+    "<ul style='padding:10px'>#{expander.join('')}</ul>"
+  end
+
+  def grid_reader(opts={})
+    data = {}
+    item = {}
+    data[:reader]   = []
+    data[:columns]  = []
+    opts[:log]    ||= false
+    opts[:fields]   = [
+      {:id => 'item_id', :type => 'string', :header => 'ID', :width => 30},
+      {:id => 'title',   :type => 'string'}
+    ] << opts[:fields] << [
+      {:id => 'updated_at', :type => 'datecolumn', :header => 'Last Updated', :width => 140},
+      {:id => 'author',     :type => 'string'}
+    ] unless opts[:log]
+    hidden_merge(opts).flatten.compact.each do |x|
+      data[:reader] << {
+        :title => x[:id],
+        :type  => x[:type]
+      }
+      data[:columns] << {
+        :id       => x[:id],
+        :width    => x[:width],
+        :align    => x[:align],
+        :renderer => x[:renderer],
+        :hidden   => x[:hidden] || false,
+        :header   => x[:header] || x[:id].humanize
+      } unless is_hidden_field?(opts, x[:id])
+    end
+    item = opts[:data][:item].grid_defaults(opts[:extend]) unless opts[:data][:item].nil?
+    {
+      :success => true,
+      :total   => opts[:data][:total],
+      :reader  => grid_config({
+        :class => :reader,
+        :data  => data[:reader]
+      }),
+      :columns => grid_config({
+        :class => :columns,
+        :data  => data[:columns]
+      })
+    }.merge({:data    => opts[:data][:list]}).
+      merge({:setting => {
+        :action     => action_name,
+        :group_by   => opts[:group_by],
+        :buttons    => opts[:buttons]    || [
+          {
+            :text     => "Add #{controller_name.humanize.singularize}",
+            :iconCls  => 'icon-add',
+            :disabled => false,
+            :multiple => true,
+            :id       => 'add_new_item',
+            :handler  => 'addNewItem'
+          }
+        ],
+        :autoexpand => opts[:autoexpand] || 'title'
+    }.merge(item)})
+  end
+
+  def render_xhr(data={}, out=:json)
+    logger.info '-- render_xhr: Render action'
+    respond_to do |f|
+      f.send(out) {render out => data.merge!(default_xhr)}
+    end
+  end
+
+  def language_data(lang)
+    logger.info '-- language_data: Set base language data'
+    {
+      :language => {
+        :alignment  => lang.alignment,
+        :char_set   => lang.char_set,
+        :direction  => lang.direction,
+        :short_name => lang.short_name
+      }
+    } unless lang.is_a?(String)
+  end
+
+  def check_language(xhr=false)
+    logger.info '-- check_language: Detect available language'
+    if params[:lang] == session[:system][:language][:current].short_name
+      return session[:system][:language][:current]
+    end unless session[:system].blank?
+    set_language(xhr)
+  end
+
+  private
+  
+  def restore_rules(storage)
+    return false if storage.nil?
+    user = storage.user
+    return false if user.nil?
+#    TODO implement user timeout
+#    timeout = user.timeout
+    request.headers["HTTP_USER_AGENT"].eql?(storage.user_agent) &&
+    request.remote_ip.eql?(storage.user_ip)
+  end
+
+  def login_init(user)
+    logger.info '-- login_init: Store user data into session'
+    session[:system][:user] = user
+    User.generate_uid(user)
+    User.set_login_info({
+      :item_id    => user[:user_id],
+      :session_id => request.session_options[:id],
+      :user_agent => request.headers["HTTP_USER_AGENT"],
+      :user_ip    => request.remote_ip,
+      :data       => Base64.encode64(Marshal.dump(session[:system]))
+    }) if params[:user][:remember].eql?('on')
+  end
+
+  def set_language(xhr)
+    logger.info '-- set_language: Store language data into session'
+    def_lang = default_language(xhr)
+    lang = params[:lang] || def_lang.short_name
+    current_lang = Language.current_lang(lang)
+    if current_lang.nil?
+      redirect_to :lang => def_lang.short_name unless xhr unless def_lang.nil?
+    else
+      session[:system][:language][:current] = current_lang
+      current_lang
+    end
+  end
+
+  def default_language(xhr)
+    logger.info '-- default_language: Get default language'
+    return session[:system][:language][:default] unless session[:system].nil?
+    default_lang = Language.default_lang
+    unless default_lang.nil?
+      init_session(default_lang)
+      default_lang
+    else
+      lang_error = 'Default language is not set'
+      render :text => lang_error unless xhr
+      lang_error if xhr
+    end
+  end
+
+  def init_session(lang)
+    logger.info '-- init_session: Store base langauge data'
+    session[:system] = {
+      :language => {
+        :default => lang,
+        :current => lang
+      }
+    }
+  end
+
+  protected
+
+  def is_hidden_field?(opts, value)
+    hidden = false
+    opts[:hidden].each do |x|
+      hidden = true if x.has_value?(value)
+    end
+    hidden
+  end
+
+  def hidden_merge(opts={})
+    opts[:hidden] ||= []
+    opts[:hidden].each{|x| opts[:fields] << x}
+    opts[:fields]
+  end
+
+  def grid_config(opts={})
+    json_map = []
+    case opts[:class]
+    when :reader
+      opts[:data].each do |x|
+        json_map << {
+          :name => x[:title],
+          :type => x[:type]
+        }
+      end
+    when :columns
+      opts[:data].each do |x|
+        data = {
+          :id        => x[:id],
+          :dataIndex => x[:id],
+          :header    => x[:header],
+          :hidden    => x[:hidden]
+        }
+        data[:width]    = x[:width]    unless x[:width].nil?
+        data[:align]    = x[:align]    unless x[:align].nil?
+        data[:renderer] = x[:renderer] unless x[:renderer].nil?
+        json_map << data
+      end
+    end
+    json_map
+  end
+
+end

@@ -1,0 +1,148 @@
+var ajax = {
+    run: true,
+    hash : function(opts) {
+        return {
+            method: opts.method || 'post',
+            success: function(response, data){
+                opts.json   = ajax.decodeJSON(response) || data.result.json;
+                opts.status = response.status || data.response.status;
+                opts.data   = data;
+                ajax.handler(opts);
+            },
+            failure: function(response, data){
+                opts.json   = response;
+                opts.status = response.status;
+                opts.data   = data;
+                ajax.handler(opts);
+            }
+        }
+    },
+    load : function(opts) {
+        if (opts.title) {
+            opts.spinner = html.spinner({
+                region: opts.region,
+                msg: opts.title
+            });
+            opts.spinner.show();
+        }
+        opts.hash         = this.hash(opts);
+        opts.once         = opts.once    || false;
+        opts.hash.headers = opts.headers || {};
+        opts.hash.params  = opts.params  || {};
+        opts.hash.url     = opts.url;
+        if (opts.once) {
+            if (this.run) {
+                opts.ajax = Ext.Ajax.request(opts.hash);
+            }
+            this.run  = false;
+        } else {
+            this.run  = true;
+            opts.ajax = Ext.Ajax.request(opts.hash);
+        }
+    },
+    sendFormData : function() {
+        var data = this.formHTML.getForm(),
+            opts = {
+                method:   'put',
+                callback: form.formCallback
+            };
+        opts.spinner = html.spinner({msg:this.formHTML.title});
+        opts.spinner.show();
+        opts.hash = ajax.hash(opts);
+        opts.hash.clientValidation = false;
+        data.submit(opts.hash);
+    },
+    decodeJSON : function(response) {
+        return Ext.util.JSON.decode(response.responseText);
+    },
+    handler : function(opts) {
+        if (base.unDefined(opts.timestamp)) {login.setTimeStamp();}
+        if (opts.spinner) {opts.spinner.hide();}
+        switch(opts.status) {
+            case 200:
+                this.success(opts);
+                break;
+            default:
+                this.failure(opts);
+                break;
+        }
+    },
+    success : function(opts) {
+        try {opts.callback(opts);}
+        catch(e) {this.jsError(e);}
+    },
+    failure : function(opts) {
+        opts.json.status = opts.json.status || base.defaultErrorCode;
+        opts.status = opts.json.status.toString();
+        opts.statusText = opts.json.statusText;
+        opts.body = base.removeHTML(opts.json.responseText, 'body');
+        html.errorLess({
+            clock: base.logDate(),
+            name:  'Error on: '+opts.title,
+            msg:   opts.status+' '+opts.json.statusText+':'+html.br+this.errorStatus(opts.status).desc,
+            opts:  opts
+        });
+    },
+    jsError : function(e) {
+        if (e.message !== ajax.handleJsError.message) {
+            this.handleJsError.message = e.message;
+            var errorType = this.errorStatus(base.defaultErrorCode),
+                opts = {},
+                br = html.br;
+            opts.title = 'Javascript: '+e.name;
+            opts.status = errorType.msg;
+            opts.statusText = errorType.desc;
+            opts.body = [
+                opts.title,
+                opts.status+': '+opts.statusText+br,
+                'Stack: '+html.pre(e.stack)
+            ].join(br);
+            html.errorLess({
+                clock: base.logDate(),
+                name:  opts.title,
+                msg:   'Line '+e.lineNumber+', file name:'+br+e.fileName+br.loop(2)+e.message,
+                opts:  opts
+            });
+        }
+    },
+    errorStatus : function(code) {
+        return base.t({
+            item:   'error',
+            action: 'status'
+        })[code] || {};
+    },
+    saveError : function(type, json) {
+        var opts = json.opts || {};
+        ajax.load({
+            params: {
+                type:   type,
+                status: opts.status     || json.status,
+                title:  opts.statusText || json.msg,
+                body:   opts.body       || json.body
+            },
+            url:      base.getURL('/error_logs/handler/'),
+            once:     true,
+            callback: ajax.errorHandler
+        });
+    },
+    handleJsError : function(message, url, lineNumber) {        
+        ajax.jsError({
+            name:       message,
+            lineNumber: lineNumber,
+            fileName:   url,
+            message:    message,
+            stack:      'Line '+lineNumber+', file name:'+html.br+url+html.br.loop(2)+message
+        });
+        return false;
+    },
+    errorHandler : function(opts) {
+        if (opts.json.error) {
+            Ext.Msg.show({
+               title:   opts.json.name,
+               msg:     opts.json.msg,
+               buttons: Ext.Msg.OK,
+               icon:    Ext.MessageBox.ERROR
+            });
+        }
+    }
+};
